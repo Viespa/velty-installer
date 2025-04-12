@@ -1,10 +1,17 @@
 {
-    "name": "victo/velty-framework",
-    "description": "Velty starter project",
+    "name": "viespa/velty-installer",
+    "description": "Velty project installer",
     "type": "project",
+    "license": "MIT",
+    "bin": [
+        "bin/velty"
+    ],
     "require": {
-        "victo/velty": "^1.0"
+        "php": "^8.1"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "autoload": {
+        "psr-4": {
+            "Velty\\Installer\\": "src/"
+        }
+    }
 }
