@@ -1,0 +1,47 @@
+#!/usr/bin/env php
+<?php
+
+$project = $argv[1] ?? null;
+
+if (!$project) {
+    echo "❌ You must provide a project name.\n";
+    echo "Usage: velty new project-name\n";
+    exit;
+}
+
+$projectPath = getcwd() . DIRECTORY_SEPARATOR . $project;
+
+if (file_exists($projectPath)) {
+    echo "❌ The folder '$project' already exists.\n";
+    exit;
+}
+
+// ZIP que contiene la estructura del proyecto
+$zipUrl = 'https://github.com/Viespa/velty-framework/releases/download/v1.0.0/velty-framework.zip';
+
+echo "🚀 Creating Velty project '$project'...\n";
+
+// Descargar y extraer ZIP
+$tempFile = tempnam(sys_get_temp_dir(), 'velty_') . '.zip';
+file_put_contents($tempFile, fopen($zipUrl, 'r'));
+
+$zip = new ZipArchive;
+if ($zip->open($tempFile) === TRUE) {
+    mkdir($projectPath);
+    $zip->extractTo($projectPath);
+    $zip->close();
+    unlink($tempFile);
+    echo "✅ Project extracted to '$projectPath'.\n";
+} else {
+    echo "❌ Failed to unzip Velty project.\n";
+    unlink($tempFile);
+    exit;
+}
+
+// Instalar dependencias
+chdir($projectPath);
+echo "📦 Installing dependencies...\n";
+passthru('composer install');
+
+echo "\n✅ Velty project ready at: $projectPath\n";
+echo "👉 Run: cd $project && php velty run\n";
